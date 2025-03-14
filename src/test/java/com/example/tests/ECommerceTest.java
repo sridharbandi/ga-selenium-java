@@ -4,13 +4,19 @@ package com.example.tests;
     import com.example.pages.*;
     import org.openqa.selenium.WebDriver;
     import org.openqa.selenium.chrome.ChromeDriver;
+    import org.openqa.selenium.chrome.ChromeOptions;
     import org.testng.annotations.AfterClass;
     import org.testng.annotations.BeforeClass;
     import org.testng.annotations.Listeners;
     import org.testng.annotations.Test;
 
-    @Listeners(ChainTestListener.class)
+    import java.io.IOException;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+
+@Listeners(ChainTestListener.class)
     public class ECommerceTest {
+        private Path userDataDir;
         private WebDriver driver;
         private LoginPage loginPage;
         private ProductsPage productsPage;
@@ -20,9 +26,17 @@ package com.example.tests;
         private ConfirmationPage confirmationPage;
 
         @BeforeClass
-        public void setUp() {
+        public void setUp() throws IOException {
             // Set up the WebDriver (e.g., ChromeDriver)
-            driver = new ChromeDriver();
+            // Create a unique user data directory for each test session
+            userDataDir = Files.createTempDirectory("chrome-user-data-");
+
+            // Set Chrome options
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--user-data-dir=" + userDataDir.toString());
+
+            // Initialize WebDriver
+            driver = new ChromeDriver(options);
             // Initialize the page objects
             loginPage = new LoginPage(driver);
             productsPage = new ProductsPage(driver);
@@ -100,5 +114,20 @@ package com.example.tests;
             if (driver != null) {
                 driver.quit();
             }
+            // Clean up the user data directory
+            if (userDataDir != null) {
+                try {
+                    Files.walk(userDataDir)
+                            .map(Path::toFile)
+                            .forEach(file -> {
+                                if (!file.delete()) {
+                                    file.deleteOnExit();
+                                }
+                            });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
