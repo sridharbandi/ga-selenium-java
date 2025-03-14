@@ -36,6 +36,8 @@ package com.example.tests;
             options.addArguments("--headless");
             // Initialize WebDriver
             driver = new ChromeDriver(options);
+            ChainTestListener.log("Launching the browser");
+
             // Initialize the page objects
             loginPage = new LoginPage(driver);
             productsPage = new ProductsPage(driver);
