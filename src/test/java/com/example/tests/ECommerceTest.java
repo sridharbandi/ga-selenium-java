@@ -16,7 +16,6 @@ package com.example.tests;
 
 @Listeners(ChainTestListener.class)
     public class ECommerceTest {
-        private Path userDataDir;
         private WebDriver driver;
         private LoginPage loginPage;
         private ProductsPage productsPage;
@@ -28,13 +27,13 @@ package com.example.tests;
         @BeforeClass
         public void setUp() throws IOException {
             // Set up the WebDriver (e.g., ChromeDriver)
-            // Create a unique user data directory for each test session
-            userDataDir = Files.createTempDirectory("chrome-user-data-");
-
             // Set Chrome options
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--user-data-dir=" + userDataDir.toString());
+            options.addArguments("--no-sandbox");
 
+            options.addArguments("--disable-dev-shm-usage");
+
+            options.addArguments("--headless");
             // Initialize WebDriver
             driver = new ChromeDriver(options);
             // Initialize the page objects
@@ -114,20 +113,5 @@ package com.example.tests;
             if (driver != null) {
                 driver.quit();
             }
-            // Clean up the user data directory
-            if (userDataDir != null) {
-                try {
-                    Files.walk(userDataDir)
-                            .map(Path::toFile)
-                            .forEach(file -> {
-                                if (!file.delete()) {
-                                    file.deleteOnExit();
-                                }
-                            });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
