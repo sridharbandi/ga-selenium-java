@@ -4,7 +4,6 @@ package com.example.tests;
     import com.example.pages.*;
     import org.openqa.selenium.WebDriver;
     import org.openqa.selenium.chrome.ChromeDriver;
-    import org.openqa.selenium.chrome.ChromeOptions;
     import org.testng.annotations.AfterClass;
     import org.testng.annotations.BeforeClass;
     import org.testng.annotations.Listeners;
@@ -27,15 +26,8 @@ package com.example.tests;
         @BeforeClass
         public void setUp() throws IOException {
             // Set up the WebDriver (e.g., ChromeDriver)
-            // Set Chrome options
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--no-sandbox");
-
-            options.addArguments("--disable-dev-shm-usage");
-
-            options.addArguments("--headless");
             // Initialize WebDriver
-            driver = new ChromeDriver(options);
+            driver = new ChromeDriver();
             ChainTestListener.log("Launching the browser");
 
             // Initialize the page objects
